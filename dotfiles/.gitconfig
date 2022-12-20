@@ -1,0 +1,7 @@
+[user]
+	name = Chuck Hinson
+        email = 190260+chuckhinson@users.noreply.github.com
+[core]
+	autocrlf = input
+
+
