@@ -1,0 +1,16 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Compare Side-By-Side",
+		"Indent XML",
+		"MarkdownEditing",
+		"MarkdownPreview",
+		"Package Control",
+		"SublimeLinter",
+		"SublimeLinter-shellcheck",
+	],
+}
