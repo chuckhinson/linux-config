@@ -8,10 +8,10 @@ function main () {
     source /etc/os-release
 
     # Make sure we're up to date before we start installing stuff
-#    sudo apt update
-#    sudo apt upgrade
+    sudo apt update
+    sudo apt upgrade
 
-#    installCommonPackages
+    installCommonPackages
     installSublimeText
 
 }
