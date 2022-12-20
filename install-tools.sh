@@ -13,6 +13,7 @@ function main () {
 
     installCommonPackages
     installSublimeText
+    installShellcheck
 
 }
 
@@ -76,6 +77,12 @@ function installSublimePackageControl() {
   else
     echo "${PACKAGE_NAME} already exists..."
   fi  
+
+}
+
+function installShellcheck {
+
+  sudo apt install shellcheck
 
 }
 
