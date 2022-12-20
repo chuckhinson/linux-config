@@ -1,0 +1,27 @@
+# Remember that patterns that have a slash ('/') anywhere other than at 
+# the end of the pattern makes the pattern relative to the .gitignore 
+# file (even if the slash is at the beginning)
+
+# openvpn profile files
+*.ovpn
+
+# Try to prevent credential stuff from ending up in git
+.ssh/
+*_rsa
+*.pem
+*.key
+*.crt
+
+# Ignore some sublime files
+Package Control.*-ca-bundle
+Package Control.*-ca-list
+Package Control.ca-certs/
+Package Control.cache/
+Package Control.last-run
+*.sublime-workspace
+*.sublime-project # unless most use Sublime
+oscrypto-ca-bundle.crt
+bh_unicode_properties.cache
+
+
+
