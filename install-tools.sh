@@ -14,7 +14,8 @@ function main () {
     installCommonPackages
     installSublimeText
     installShellcheck
-
+    installChrome
+    
 }
 
 function installCommonPackages() {
@@ -84,6 +85,11 @@ function installShellcheck {
 
   sudo apt install shellcheck
 
+}
+
+function installChrome {
+  wget -qP /tmp/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb
 }
 
 main "$@"
