@@ -12,6 +12,7 @@ function main () {
     sudo apt upgrade
 
     installCommonPackages
+    installDocker
     installSublimeText
     installShellcheck
     installChrome
@@ -34,6 +35,37 @@ function installCommonPackages() {
   # AWS Ubuntu AMIs, so doing this on an EC2 instance isnt necessary, but doesnt hurt 
   # anything)
   sudo apt install -y vim
+
+}
+
+function installDocker() {
+
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  sudo apt update -q
+  sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+  # Let user run docker without sudo
+  #sudo groupadd docker
+  sudo usermod -aG docker "$USER"
+
+  # Use default docker configuraiton unless we detect a second volume 
+  # mounted at /d
+  if [ -d /d ]; then
+    cat | sudo tee "/etc/docker/daemon.json" > /dev/null << EOF
+{
+  "data-root": "/d/docker",
+  "default-address-pools": [
+    {"base":"172.16.0.0/13","size":20}
+  ]
+}
+EOF
+  fi
 
 }
 
