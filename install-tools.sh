@@ -15,7 +15,8 @@ function main () {
     installSublimeText
     installShellcheck
     installChrome
-    
+    installJava
+    installKeystoreExplorer    
 }
 
 function installCommonPackages() {
@@ -90,6 +91,24 @@ function installShellcheck {
 function installChrome {
   wget -qP /tmp/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb
+}
+
+function installJava () {
+
+    sudo apt install -yf openjdk-11-jdk
+
+}
+
+function installKeystoreExplorer () {
+  # NOTE: has dependency on java but does not install it
+
+  local KS_VERSION="5.5.1"
+  local KS_FILE="kse_${KS_VERSION}_all.deb"
+  local KS_URI="https://github.com/kaikramer/keystore-explorer/releases/download/v${KS_VERSION}/${KS_FILE}"
+
+  wget -P /tmp/ "${KS_URI}"
+  sudo dpkg -i "/tmp/${KS_FILE}"
+
 }
 
 main "$@"

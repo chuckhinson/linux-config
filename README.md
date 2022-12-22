@@ -39,7 +39,7 @@ Some planning notes to help me remember why things look the way they do:
     4. I think I also need to install openresolve?
 1. Install my base toolset
     1. Assume git's already installed (else how are you pulling this repo)
-    1. net-tools and ca-certificates packages  (zip/unzip?)
+    1. ~~net-tools and ca-certificates packages  (zip/unzip?)~~
     1. Docker - including daemon.json.  
         1. Link /etc/docker/daemon.json to linux-config?
         2. configure docker to store all of its stuff on the data drive rather than the root OS drive
@@ -48,16 +48,16 @@ Some planning notes to help me remember why things look the way they do:
         1. ~~link $HOME/.config/sublime-text-3/Packages/User to $HOME/linux-config/sublime-text-3/Packages/User~~
         1. ~~.gitignore the Package Control files and copy them into $HOME/linux-config/sublime-text-3/Packages/User before linking~~
             1. ~~Maybe use cp --no-clobber to copy only files that we dont have under source control~~
-    4. Chrome
-        1. I'm making no attempt to save any Chrome configuration/history/etc.  If that's something I need, I'll solve that in a different way since I'm not interested in sharing my browsing habits in a public git repo
+    4. ~~Chrome~~
+        1. ~~I'm making no attempt to save any Chrome configuration/history/etc.  If that's something I need, I'll solve that in a different way since I'm not interested in sharing my browsing habits in a public git repo~~
     5. Python 3
     6. jq/yq
-    7. KeyStore Explorer
+    7. ~~KeyStore Explorer~~
     8. kubectl
     9. awscli
-    9. vim (Because the one that comes with ubuntu seems to have an odd config and 
+    9. ~~vim (Because the one that comes with ubuntu seems to have an odd config and 
        doesnt seem to want to pay attention to my .vimrc.  I'm not vim expert, so 
-       this could easily be user error on my part.)
+       this could easily be user error on my part.)~~
 2. Put dotfiles in right place
     1. ~~dofiles live in $HOME/linux-config/dotfiles and are linked into the home directory~~
     2. ~~.profile~~
