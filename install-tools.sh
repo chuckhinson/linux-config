@@ -18,7 +18,8 @@ function main () {
     installShellcheck
     installChrome
     installJava
-    installKeystoreExplorer    
+    installKeystoreExplorer
+    installAwsCli    
 }
 
 function installCommonPackages() {
@@ -162,5 +163,14 @@ function installKeystoreExplorer () {
   sudo dpkg -i "/tmp/${KS_FILE}"
 
 }
+
+fucntion installAwsCli {
+  
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "/tmp/awscliv2.zip"
+  unzip /tmp/awscliv2.zip -d /tmp
+  sudo /tmp/aws/install
+
+}
+
 
 main "$@"
