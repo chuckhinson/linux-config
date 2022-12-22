@@ -12,6 +12,7 @@ function main () {
     sudo apt upgrade
 
     installCommonPackages
+    installJqYq
     installDocker
     installSublimeText
     installShellcheck
@@ -37,6 +38,25 @@ function installCommonPackages() {
   sudo apt install -y vim
 
 }
+
+function installJqYq () {
+
+  # jq and yq are json and yaml parsing tools - kind of like xquery
+  # for json and yaml.
+  # Note that while yaml is supposedly a superset of json and thus
+  # yq should be able to parse json as well as yaml, as of this
+  # writing, yq does not have all of the features that jq has, so
+  # we're installing jq and yq for now.
+
+  sudo apt install -y jq
+
+  local YQ_VERSION="4.30.6"
+  local YQ_URI="https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64"
+  sudo wget "${YQ_URI}" -O /usr/bin/yq
+  sudo chmod +x /usr/bin/yq
+
+}
+
 
 function installDocker() {
 
