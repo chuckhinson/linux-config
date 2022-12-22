@@ -34,24 +34,22 @@ related to the OS goes on the data drive
 
 Some planning notes to help me remember why things look the way they do:
 1. Install/setup vpn
-    2. Everything goes under .openvpn, including binaries
+    1. Everything goes under .openvpn, including binaries
     3. link ~/.openvpn to ~/linux-config/.openvpn and add ~/.openvpn/bin to PATH
     4. I think I also need to install openresolve?
 1. Install my base toolset
     1. Assume git's already installed (else how are you pulling this repo)
     1. net-tools and ca-certificates packages  (zip/unzip?)
-    2. Docker - including daemon.json.  
+    1. Docker - including daemon.json.  
         1. Link /etc/docker/daemon.json to linux-config?
-        2. configure docker to store all of its stuff on the data drive rather
-           than the root OS drive
-    3. Sublime - https://linuxhint.com/install_sublime_text3_ubuntu/
-        1. link ~/.config/sublime-text-3/Packages/User to ~/linux-config/sublime-text-3/Packages/User
-        1. .gitignore the Package Control files and copy them into ~/linux-config/sublime-text-3/Packages/User before linking
-            1. Maybe use cp --no-clobber to copy only files that we dont have under source control
+        2. configure docker to store all of its stuff on the data drive rather than the root OS drive
+    3. ~~Sublime~~
+        1. ~~https://linuxhint.com/install_sublime_text3_ubuntu/~~
+        1. ~~link $HOME/.config/sublime-text-3/Packages/User to $HOME/linux-config/sublime-text-3/Packages/User~~
+        1. ~~.gitignore the Package Control files and copy them into $HOME/linux-config/sublime-text-3/Packages/User before linking~~
+            1. ~~Maybe use cp --no-clobber to copy only files that we dont have under source control~~
     4. Chrome
-        1. I'm making no attempt to save any Chrome configuration/history/etc.  
-           If that's something I need, I'll solve that in a different way since
-           I'm not interested in sharing my browsing habits in a public git repo
+        1. I'm making no attempt to save any Chrome configuration/history/etc.  If that's something I need, I'll solve that in a different way since I'm not interested in sharing my browsing habits in a public git repo
     5. Python 3
     6. jq/yq
     7. KeyStore Explorer
@@ -61,12 +59,12 @@ Some planning notes to help me remember why things look the way they do:
        doesnt seem to want to pay attention to my .vimrc.  I'm not vim expert, so 
        this could easily be user error on my part.)
 2. Put dotfiles in right place
-    1. dofiles live in ~/linux-config/ and are linked into the home directory
-    2. .profile
-    2. .bashrc
-    3. .gitconfig
-    4. .vimrc
-    5. .bash_aliases
+    1. ~~dofiles live in $HOME/linux-config/dotfiles and are linked into the home directory~~
+    2. ~~.profile~~
+    3. ~~.bashrc~~
+    4. ~~.gitconfig~~
+    5. ~~.vimrc~~
+    6. .bash_aliases
     
 
 I try to maintain the distinction between .profile and .bashrc and be
