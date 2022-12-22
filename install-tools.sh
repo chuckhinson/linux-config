@@ -57,7 +57,7 @@ function installDocker() {
   # Use default docker configuraiton unless we detect a second volume 
   # mounted at /d
   if [ -d /d ]; then
-    cat | sudo tee "/etc/docker/daemon.json" > /dev/null << EOF
+    sudo tee "/etc/docker/daemon.json" > /dev/null << EOF
 {
   "data-root": "/d/docker",
   "default-address-pools": [
