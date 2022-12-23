@@ -1,0 +1,53 @@
+#!/bin/bash
+# 
+# This file sets up routes so that docker can work.
+# When connected to VPN, OpenVpn is normally configured to send all traffic 
+# through the vpn tunnel.  It does this by setting up routes that point all 
+# subnets to the vpn server.  Unfortunately, this causes problems for docker
+# because docker needs some subnets to be local for its networking.
+# To fix this, we'll let docker have the 172.16.0.0/13 block and route
+# everything else through the VPN.  Note that docker requires some 
+# configuration as well in order to work with this (in /etc/docker/daemon.json)
+# See also:
+#   https://github.com/docker/docker.github.io/issues/8663
+#   https://forums.docker.com/t/custom-ip-range-for-new-networks/60839
+#
+
+echo "Updating docker routes for gateway ${route_vpn_gateway} and device ${dev}"
+
+
+# TODO: make these parameters instead of using env vars
+[ "$script_type" ] || exit 0
+[ "$dev" ] || exit 0
+[ "$route_vpn_gateway" ] || exit 0
+
+ROUTES="192.0.0.0/2 \
+128.0.0.0/3 \
+176.0.0.0/4 \
+160.0.0.0/5 \
+168.0.0.0/6 \
+174.0.0.0/7 \
+173.0.0.0/8 \
+172.128.0.0/9 \
+172.64.0.0/10 \
+172.32.0.0/11 \
+172.0.0.0/12 \
+172.24.0.0/13 "
+
+
+case "$script_type" in
+  route-up)
+    ip route del 128.0.0.0/1 via $route_vpn_gateway 
+    for ROUTE in ${ROUTES}
+    do
+      ip route add ${ROUTE} via $route_vpn_gateway dev $dev
+    done
+	;;
+  route-pre-down)
+    for ROUTE in ${ROUTES}
+    do
+      ip route del ${ROUTE} via $route_vpn_gateway
+    done
+    ip route add 128.0.0.0/1 via $route_vpn_gateway dev $dev
+	;;
+esac
