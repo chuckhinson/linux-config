@@ -164,6 +164,13 @@ function installSublimeText() {
 
 function installSublimePackageControl() {
   # Lifted from https://github.com/drliangjin/sublime.d
+  # Note that an alternative method is to use sublime's CLI interface
+  # e.g., subl --command install_package_control, although it is somewhat
+  # finicky and requires multiple invocations (like sublime has to already
+  # be running before executing the install_package_control command and then
+  # you have to sleep for a bit to give it time to complete)
+  # See https://forum.sublimetext.com/t/installing-packages-from-the-command-line/64029/4
+  # and https://www.sublimetext.com/docs/command_line.html
 
   PACKAGE_URL="https://packagecontrol.io/Package%20Control.sublime-package"
   PACKAGE_DIR_UBUNTU="$HOME/.config/sublime-text/Installed Packages"
