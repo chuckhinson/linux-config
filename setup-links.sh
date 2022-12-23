@@ -36,11 +36,32 @@ function makeLink {
   fi
 }
 
+function configureGnomeTerminal {
+  # Gnome terminal keeps all of its config in a dconf database instead of in
+  # a text file.  The only way to save (and restore) teh configuration is to
+  # use dconf dump (and load).  That means that after you make changes to the
+  # terminal preferences, you have to remember to do a dconf dump to the text
+  # file that we'll keep in git.
+  #
+  # I dont know that this is the right place for this.  It's not a dotfile, but
+  # it is used to configure an app.
+  #
+  # TODO: Maybe see about running a cron job once a day to dump the settings
+
+  dconf load /org/gnome/terminal/legacy/ < $HOME/linux-config/gnome-terminal.txt
+
+  # for reference, the dump command is
+  # dconf dump /org/gnome/terminal/legacy/ > $HOME/linux-config/gnome-terminal.txt
+
+}
+
 function main {
   for f in $(find "$DOTFILE_DIR" -mindepth 1 -maxdepth 1 -not -type d)
   do 
     makeLink "$f" "$DOTFILE_DIR"
   done
+
+  configureGnomeTerminal
 
   printf "\nFor best results, you should log out and back in again before\n"
   printf "running the install-tools script so that all of the setup and configuration\n"
