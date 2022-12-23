@@ -40,9 +40,9 @@ Some planning notes to help me remember why things look the way they do:
 1. Install my base toolset
     1. Assume git's already installed (else how are you pulling this repo)
     1. ~~net-tools and ca-certificates packages  (zip/unzip?)~~
-    1. Docker - including daemon.json.  
-        1. Link /etc/docker/daemon.json to linux-config?
-        2. configure docker to store all of its stuff on the data drive rather than the root OS drive
+    1. ~~Docker - including daemon.json.~~
+        1. ~~Link /etc/docker/daemon.json to linux-config?~~
+        2. ~~configure docker to store all of its stuff on the data drive rather than the root OS drive~~
     3. ~~Sublime~~
         1. ~~https://linuxhint.com/install_sublime_text3_ubuntu/~~
         1. ~~link $HOME/.config/sublime-text-3/Packages/User to $HOME/linux-config/sublime-text-3/Packages/User~~
@@ -51,10 +51,10 @@ Some planning notes to help me remember why things look the way they do:
     4. ~~Chrome~~
         1. ~~I'm making no attempt to save any Chrome configuration/history/etc.  If that's something I need, I'll solve that in a different way since I'm not interested in sharing my browsing habits in a public git repo~~
     5. Python 3
-    6. jq/yq
+    6. ~~jq/yq~~
     7. ~~KeyStore Explorer~~
-    8. kubectl
-    9. awscli
+    8. ~~kubectl~~
+    9. ~~awscli~~
     9. ~~vim (Because the one that comes with ubuntu seems to have an odd config and 
        doesnt seem to want to pay attention to my .vimrc.  I'm not vim expert, so 
        this could easily be user error on my part.)~~
@@ -69,7 +69,7 @@ Some planning notes to help me remember why things look the way they do:
 
 I try to maintain the distinction between .profile and .bashrc and be
 deliberate about what goes in each.  Things that should only be done at 
-login and/or that can or should be be inherited by child shells go in \~/.profile.  
+login and/or that can or should be be inherited by all child shells go in \~/.profile.
 Anything that doesnt need to be shared by all child shells or that isnt 
 inherited from the login shell goes in \~/.bashrc
 
