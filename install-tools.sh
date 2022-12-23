@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Install my common tools.
+#
+# Note that this script makes no attempt to update any corresponding dotfiles.
+# When adding new applications to be installed to this script, you should also
+# update that appropriate dotfiles at the same time (and commit those changes
+# alongside the changes to this file).  Note also that you should run the
+# setup-links.sh script before running this script so that all of the necessary
+# dotfiles are in place.
+#
+
 set -euo pipefail
 
 function main () {
@@ -14,6 +24,7 @@ function main () {
     installCommonPackages
     installJqYq
     installDocker
+    installKubectl
     installSublimeText
     installShellcheck
     installChrome
@@ -90,6 +101,41 @@ EOF
 
 }
 
+function installKubectl() {
+
+  sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg \
+   https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+  echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] \
+    https://apt.kubernetes.io/ kubernetes-xenial main" | \
+    sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+  sudo apt-get update
+  sudo apt-get install -y kubectl
+
+  # kubectl tab completion
+  # https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/
+  kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+
+
+  # krew kubectl plugin manager
+  # https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+  OS="$(uname | tr '[:upper:]' '[:lower:]')"
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+  KREW="krew-${OS}_${ARCH}"
+
+  curl -fsSL -o "/tmp/${KREW}.tar.gz" "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" \
+
+  tar -C /tmp -zxvf "/tmp/${KREW}.tar.gz"
+
+  /tmp/"${KREW}" install krew
+
+  # Note: krew needs $HOME/.krew/bin to be on your PATH
+  export PATH="$HOME/.krew/bin:$PATH"
+  kubectl krew install ctx ns
+
+}
+
 function installSublimeText() {
 
   wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | \
@@ -102,8 +148,13 @@ function installSublimeText() {
   sudo apt-get update
   sudo apt-get install sublime-text
 
-#  cp -R --no-clobber ~/.config/sublime-text/Packages/User/ sublime-test-3/User
-#  mv ~/.config/sublime-text/Packages/User ~/.config/sublime-text/Packages/User.orig
+  # User preferences dont get setup until the first time Sublime is run, so we can
+  # just drop our stuff where it should go and then Sublime can reference it and add
+  # to it once it runs the first time.
+  # TODO: preserve the original Packages/User directory before linking it
+  #  cp -R --no-clobber ~/.config/sublime-text/Packages/User/ sublime-test-3/User
+  #  mv ~/.config/sublime-text/Packages/User ~/.config/sublime-text/Packages/User.orig
+
   mkdir -p ~/.config/sublime-text/Packages
   ln -s ~/linux-config/sublime-text-3/Packages/User ~/.config/sublime-text/Packages/User
 
@@ -164,7 +215,7 @@ function installKeystoreExplorer () {
 
 }
 
-fucntion installAwsCli {
+function installAwsCli {
   
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "/tmp/awscliv2.zip"
   unzip /tmp/awscliv2.zip -d /tmp

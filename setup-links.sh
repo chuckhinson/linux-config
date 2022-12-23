@@ -41,6 +41,11 @@ function main {
   do 
     makeLink "$f" "$DOTFILE_DIR"
   done
+
+  printf "\nFor best results, you should log out and back in again before\n"
+  printf "running the install-tools script so that all of the setup and configuration\n"
+  printf "done in you dotfiles is in place.\n"
+
 }
 
 main "$@" 
