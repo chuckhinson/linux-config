@@ -57,10 +57,11 @@ function installBins () {
   OPENVPN_BINDIR="${OPENVPN_DIR}/bin"
   cp -r ./bin "${OPENVPN_BINDIR}"
 
-  # TODO: fix this so it wont add multiple entries if run more than once.
-  cat >> ~/.bashrc << EOF
-export PATH=${OPENVPN_DIR}/bin:\$PATH
+  if ! bash -i -c "env | grep ^PATH=*$OPENVPN_BINDIR" ; then
+    cat >> ~/.bashrc << EOF
+export PATH=${OPENVPN_BINDIR}:\$PATH
 EOF
+  fi
 
 }
 
