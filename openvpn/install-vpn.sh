@@ -2,24 +2,25 @@
 
 set -euo pipefail
 
+SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 OPENVPN_DIR="${HOME}/.openvpn"
 
 function installOpenvpn () {
 
-  if [[ $(dpkg -l openvpn3) ]]; then
+  if dpkg -l openvpn3 > /dev/null 2>&1 ; then
     echo "OpenVPN3 is already installed"
   else
     echo "OpenVPN3 not found. Installing OpenVPN3..."
 
-    if [[ ! $(grep -qr openvpn3 /etc/apt/sources.list*) ]]; then
+    if ! grep -qr openvpn3 /etc/apt/sources.list* ; then
       echo "Adding OpenVPN repository"
       sudo wget -qO - https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | sudo apt-key add -
       sudo wget -O /etc/apt/sources.list.d/openvpn3.list "https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-$UBUNTU_CODENAME.list"
       sudo apt update 
     fi
 	  
-  	  sudo apt install -y openvpn3
-      printf "\nInstalled OpenVpn3 %s \n" "$(dpkg -l openvpn3)"
+    sudo apt install -y openvpn3
+    printf "\nInstalled OpenVpn3 %s \n" "$(dpkg -l openvpn3)"
   fi
 
 }
@@ -53,7 +54,8 @@ function installBins () {
   # install net-tools to make route command available for start/stop scripts
   sudo apt install net-tools
 
-  cp -r ./bin "${OPENVPN_DIR}/bin"
+  OPENVPN_BINDIR="${OPENVPN_DIR}/bin"
+  cp -r ./bin "${OPENVPN_BINDIR}"
 
   # TODO: fix this so it wont add multiple entries if run more than once.
   cat >> ~/.bashrc << EOF
@@ -71,8 +73,8 @@ function main () {
     configureOpenVpn
     installBins
   else
-  	printf "Cannot find ${HOME}/client.ovpn. \n"
-  	printf "Download your profile and save as ${HOME}/client.ovpn"
+    printf "Cannot find %s/client.ovpn. \n" "${HOME}"
+    printf "Download your profile and save as %s/client.ovpn\n" "${HOME}"
     exit 1
   fi
 
