@@ -57,6 +57,8 @@ function installBins () {
   OPENVPN_BINDIR="${OPENVPN_DIR}/bin"
   cp -r ./bin "${OPENVPN_BINDIR}"
 
+  # Add openvpn/bin to our path, but only if it's not already there
+  # (Note that we spawn an interactive shell so that bashrc will be processed)
   if ! bash -i -c "env | grep ^PATH=*$OPENVPN_BINDIR" ; then
     cat >> ~/.bashrc << EOF
 export PATH=${OPENVPN_BINDIR}:\$PATH
