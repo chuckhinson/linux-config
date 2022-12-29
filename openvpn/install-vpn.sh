@@ -41,8 +41,13 @@ down ${OPENVPN_DIR}/bin/update-resolv-conf
 EOF
 
   # Setup a named configuration profile that we can reference when we
-  # start up vpn
-  openvpn3 config-import -c "${OPENVPN_DIR}/client.ovpn" --name default -p
+  # start up vpn (but only if one with the same name doesnt already exist)
+  PROFILE_NAME="default"
+  if openvpn3 config-manage --config $PROFILE_NAME --show >& /dev/null ; then
+    printf "Openvpn profile \"%s\" already exists; skipping profile creation\n" $PROFILE_NAME
+  else
+    openvpn3 config-import -c "${OPENVPN_DIR}/client.ovpn" --name $PROFILE_NAME -p
+  fi
 
   printf "OpenVpn configuration complete\n"
 
