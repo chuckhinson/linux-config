@@ -9,11 +9,11 @@ be necessary to test out the scripts wouldnt somehow corrupt my windows installa
 
 - Ensure Hyper-V is enabled
     - https://techcommunity.microsoft.com/t5/itops-talk-blog/step-by-step-enabling-hyper-v-for-use-on-windows-10/ba-p/267945
-- Download Ubuntu Desktop from https://ubuntu.com/download/desktop  (22.04 LTS)
+- Download Ubuntu Desktop from https://ubuntu.com/download/desktop (or server)
 - From Hyper-V Manager, goto Hyper-V Settings 
-    - Under Enhanced Security Mode Policy (in the Server section) make sure Allow Enhanced session mode is checked  
+    - Under Enhanced Session Mode Policy (in the Server section) make sure Allow Enhanced session mode is checked  
     - Under Enhanced Session Mode (in the User section) ensure Use enhanced session mode is enabled
-- Create a new virtual switch for an externa network
+- Create a new virtual switch for an external network
     + From Hyper-V Manager, select Virtual Switch Manager
     + Click New virtual newtork swtich
     + Select External and click Create Virtual Switch
@@ -21,14 +21,15 @@ be necessary to test out the scripts wouldnt somehow corrupt my windows installa
         * You can pick either wired or wireless
         * Do not select anything that has 'virtual' in its name and do not select the Zscaler network adapter
 - In Hypver-V Manager create a new VM (DO NOT use Quick Create)
+    - Use default values unless a different value is specified below
     - Generation 2
     - 4 GB RAM (works well enough for most stuff)
     - Network Connection: Change from Not Connected to the External network switch you created above
     - Virtual Hard Disk Siz: At leat 40GB
         + If using a single disk, you'll probably want at least 100 GB
         + If using two disks (OS and data), you'll just need to configure the root OS disk for now and that needs to be at least 40GB 
-    - Install from ISO, point to downloaded ISO
-- Select the newly created VM and go to settings
+    - Install an operating system from a bootable image file, point ISO downloaded above
+- Go to Settings for the newly created VM
     - under Security, disable Secure Boot
     - under Integration Services, make sure everything is checked (including Guest Services)
 - Run powershell as Admin
