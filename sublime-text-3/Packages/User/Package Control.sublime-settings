@@ -6,11 +6,13 @@
 	"installed_packages":
 	[
 		"Compare Side-By-Side",
+		"Dockerfile Syntax Highlighting",
 		"Indent XML",
 		"MarkdownEditing",
 		"MarkdownPreview",
 		"Package Control",
 		"SublimeLinter",
 		"SublimeLinter-shellcheck",
+		"Terraform",
 	],
 }
