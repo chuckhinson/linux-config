@@ -120,3 +120,7 @@ fi
 PATH="$HOME/.krew/bin:$PATH"
 PATH=/home/chinson/.openvpn/bin:$PATH
 export PATH
+
+complete -C /usr/bin/terraform terraform
+
+complete -C /usr/bin/packer packer
