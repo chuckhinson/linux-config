@@ -1,7 +1,12 @@
 [user]
 	name = Chuck Hinson
-        email = 190260+chuckhinson@users.noreply.github.com
+# Dont put your email address in this file (you'll regret it because
+# you'll forget to config a non-github project with the right email
+# and then you'll end up committing to that project with your gitbub email)
+#    email = 190260+chuckhinson@users.noreply.github.com
 [core]
 	autocrlf = input
 
 
+[init]
+	defaultBranch = main
