@@ -1,0 +1,10 @@
+// SublimeLinter Settings - User
+{
+	// "debug": true,
+	
+	"linters": {
+      "shellcheck": {
+        "exclude": "SC1091"
+      }		
+	}
+}

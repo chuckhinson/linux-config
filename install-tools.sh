@@ -1,16 +1,18 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Install my common tools.
 #
 # Note that this script makes no attempt to update any corresponding dotfiles.
 # When adding new applications to be installed to this script, you should also
 # update that appropriate dotfiles at the same time (and commit those changes
 # alongside the changes to this file).  Note also that you should run the
-# setup-links.sh script before running this script so that all of the necessary
+# setup-dotfiles.sh script before running this script so that all of the necessary
 # dotfiles are in place.
 #
 
-set -euo pipefail
+declare -r DATA_VOLUME="/d"
 
 function main () {
 
@@ -25,12 +27,18 @@ function main () {
     installJqYq
     installDocker
     installKubectl
-    installSublimeText
-    installShellcheck
-    installChrome
-    installJava
+    installK9s
+    installAwsCli
+    installTerraform
+    sudo apt install shellcheck
+
+    sudo apt install -yf openjdk-11-jdk
     installKeystoreExplorer
-    installAwsCli    
+
+    installSublimeText
+    installChrome
+
+
 }
 
 function installCommonPackages() {
@@ -39,6 +47,8 @@ function installCommonPackages() {
   sudo apt install -y \
     ca-certificates \
     curl \
+    tree \
+    gnupg \
     net-tools \
     software-properties-common
   
@@ -88,10 +98,10 @@ function installDocker() {
 
   # Use default docker configuraiton unless we detect a second volume 
   # mounted at /d
-  if [ -d /d ]; then
+  if [ -d "$DATA_VOLUME" ]; then
     sudo tee "/etc/docker/daemon.json" > /dev/null << EOF
 {
-  "data-root": "/d/docker",
+  "data-root": "${DATA_VOLUME}/docker",
   "default-address-pools": [
     {"base":"172.16.0.0/13","size":20}
   ]
@@ -103,20 +113,25 @@ EOF
 
 function installKubectl() {
 
-  sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg \
-   https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  # From https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 
-  echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] \
-    https://apt.kubernetes.io/ kubernetes-xenial main" | \
+  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key \
+     | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  # allow unprivileged APT programs to read this keyring
+  sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+  echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | \
     sudo tee /etc/apt/sources.list.d/kubernetes.list
+  # helps tools such as command-not-found to work correctly
+  sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
 
   sudo apt-get update
   sudo apt-get install -y kubectl
 
   # kubectl tab completion
-  # https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/
+  # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#enable-shell-autocompletion
   kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
-
+  sudo chmod a+r /etc/bash_completion.d/kubectl
 
   # krew kubectl plugin manager
   # https://krew.sigs.k8s.io/docs/user-guide/setup/install/
@@ -133,6 +148,32 @@ function installKubectl() {
   # Note: krew needs $HOME/.krew/bin to be on your PATH
   export PATH="$HOME/.krew/bin:$PATH"
   kubectl krew install ctx ns
+
+}
+
+function installK9s() {
+# From https://github.com/derailed/k9s?tab=readme-ov-file#installation
+
+  wget -P /tmp https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
+  sudo apt install /tmp/k9s_linux_amd64.deb
+
+}
+function installAwsCli {
+
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "/tmp/awscliv2.zip"
+  unzip /tmp/awscliv2.zip -d /tmp
+  sudo /tmp/aws/install --update
+
+}
+
+function installTerraform() {
+  # From https://developer.hashicorp.com/terraform/install
+
+  wget -O - https://apt.releases.hashicorp.com/gpg | \
+    sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list
+  sudo apt update && sudo apt install terraform
 
 }
 
@@ -193,21 +234,9 @@ function installSublimePackageControl() {
 
 }
 
-function installShellcheck {
-
-  sudo apt install shellcheck
-
-}
-
 function installChrome {
   wget -qP /tmp/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb
-}
-
-function installJava () {
-
-    sudo apt install -yf openjdk-11-jdk
-
 }
 
 function installKeystoreExplorer () {
@@ -219,14 +248,6 @@ function installKeystoreExplorer () {
 
   wget -P /tmp/ "${KS_URI}"
   sudo dpkg -i "/tmp/${KS_FILE}"
-
-}
-
-function installAwsCli {
-  
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "/tmp/awscliv2.zip"
-  unzip /tmp/awscliv2.zip -d /tmp
-  sudo /tmp/aws/install
 
 }
 
