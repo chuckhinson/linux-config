@@ -23,13 +23,14 @@ function main () {
     sudo apt update
     sudo apt upgrade
 
-    installCommonPackages
+    installCommonTools
     installJqYq
     installDocker
     installKubectl
     installK9s
+    installHelm
     installAwsCli
-    installTerraform
+    installTerraformAndPacker
     sudo apt install shellcheck
 
     sudo apt install -yf openjdk-11-jdk
@@ -41,17 +42,18 @@ function main () {
 
 }
 
-function installCommonPackages() {
+function installCommonTools() {
 
   # Install some common packages
   sudo apt install -y \
     ca-certificates \
     curl \
-    tree \
     gnupg \
-    net-tools \
-    software-properties-common
-  
+    software-properties-common \
+    tree \
+    make \
+    zstd
+
   # (Re)install vim.  The version of vim included with the ubuntu ISO seems not to work 
   # quite right for me.  Not a vim expert, so this might be the wrong way to solve the
   # problem, but it works for me.  (Note that this doesnt appear to a problem with 
@@ -90,7 +92,8 @@ function installDocker() {
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
   sudo apt update -q
-  sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  sudo apt install -y uidmap
 
   # Let user run docker without sudo
   #sudo groupadd docker
@@ -158,23 +161,52 @@ function installK9s() {
   sudo apt install /tmp/k9s_linux_amd64.deb
 
 }
+
+function installHelm() {
+  # From https://helm.sh/docs/intro/install/#from-apt-debianubuntu
+
+  curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+  sudo apt-get install apt-transport-https --yes
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | \
+    sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+  sudo apt-get update
+  sudo apt-get install helm
+}
+
 function installAwsCli {
 
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "/tmp/awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
   unzip /tmp/awscliv2.zip -d /tmp
   sudo /tmp/aws/install --update
 
 }
 
-function installTerraform() {
-  # From https://developer.hashicorp.com/terraform/install
+function installTerraformAndPacker() {
+  wget -O- https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor | \
+    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
 
-  wget -O - https://apt.releases.hashicorp.com/gpg | \
-    sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
     sudo tee /etc/apt/sources.list.d/hashicorp.list
-  sudo apt update && sudo apt install terraform
 
+  sudo apt update
+
+  sudo apt install terraform packer
+
+  # terraform and packer autocomplete are so basic and incomplete that I'm not
+  # they're worth even installing since the break bash tab completion on the
+  # rest of the line container a packer or terraform command
+  # terraform -install-autocomplete
+  # packer -autocomplete-install
+
+  # TODO: Terraform wont create the plugin cache directory if it doesnt exist
+  # The plugin-cache directory normally lives under .terraform.d in the home
+  # directory, so it could be viewed as a dotfile, but it's not one that's
+  # tracked with the rest of our dotfiles and our dotfile setup doesnt
+  # support empty directory placeholders.  So do we just create that directory
+  # here, even though it might never be used? Yes?
+  mkdir -p $HOME/terraform.d/plugin-cache
 }
 
 function installSublimeText() {
