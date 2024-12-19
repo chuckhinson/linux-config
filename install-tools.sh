@@ -206,7 +206,7 @@ function installTerraformAndPacker() {
   # tracked with the rest of our dotfiles and our dotfile setup doesnt
   # support empty directory placeholders.  So do we just create that directory
   # here, even though it might never be used? Yes?
-  mkdir -p $HOME/terraform.d/plugin-cache
+  mkdir -p "$HOME/terraform.d/plugin-cache"
 }
 
 function installSublimeText() {
